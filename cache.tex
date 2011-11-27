@@ -1,0 +1,84 @@
+\section{Cache}
+
+Cache - hidden storage for valuables
+
+fast storage for valuable data/instructions that are likely to be accessed
+in the future
+
+speeds up access for these data/instructions
+
+cache is essentially a hash table: sotres a key (address), value pair
+
+\subsection{Level 1 Cache}
+Commonly used to feed the pipeline.
+For instructions - ICache
+For Data - DCache
+
+%Diagram of cache bin in pipeline
+
+\subsection{Level 2}
+second type of on-chip meory that is larger and slower than l1 chache
+
+typically l2 cache is unified, holds both instruction and data
+
+if instruction or data i not found in l1, hopefully it will be in l2
+
+%l2 cache diagram
+
+\subsection{Level N Cache \& Beyond}
+accessing off-chip memory very slow because:
+- large capacitance from macroscopic pins on cpu package
+- large capacitance from circuit board wiring connecting CPU and off-chip memory
+
+We want more on-chip memory
+
+%diagram if flow form pipeline - l1 - l2 - main memory
+
+-main memory acces time
+AMD Athlon FX-51 memory access is 125 clock cycles = 57 ns
+intel 3.2GHz P4 memory access is 204 clock cycles = 64 ns
+
+\subsection{Principle of Locality}
+Programs access a small proportion of their address space at any time.
+temporal locality
+- items accessed recently are likely to be access again soon
+e.g. instructions in a loop, induction variables
+
+Spatial Locality
+- items near those accessed recently are likely to be accessed soon
+e.g. sequential instruction access, array data
+
+Take Advantage of this
+- memory hierarchy
+- store everything on disk
+- copy recently access (and nearby) items
+  from disk to smaller DRAM memory
+  - main memory
+- copy more recently accessed (and nearby) items
+from DRAM to smaller SRAM memory
+  - cache memory attached to cpu
+
+\subsection{Memory Hierarchy Levels}
+- block (aka line): unit of copying
+- may be multiple words
+- if accessed data is present in upper level
+  - hit: access satisfied by upper level
+  - hit ratio: hits/accesses
+if accessed data is absent
+  - miss: block copied from lower level
+    - time take: miss penalty
+    - miss ratio: misses/accesses
+      = 1 - hit ratio
+    - then accessed data supplied from upper level
+
+\subsection{Direct Mapped}
+where in cache should data be placed so it can be quickly located?
+cache size is selecte to be 2 to the power of i e.g.
+the entire 32-bit address is used to locate an instruction/data in main memory
+the lower i bits (e.g. 16) are used to to (quickly) find an item in the cache
+implies that each instruction/data from main memory is copied to (mapped to) a specific
+cache location
+
+\subsection{Set Associative}
+
+\subsection{Performance}
