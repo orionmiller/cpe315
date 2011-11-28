@@ -1,2 +1,29 @@
 \section{Performance}
-Needs to be CPI of 1
+\[
+  Performance = IPC \times CLK_{Rate} \times \frac{1}{I}
+\]
+
+\subsection{Ahmdal's Law}
+\[
+  Speedup = \frac{1}{\left(1 - F\right) + \frac{F}{s}}
+\]
+
+\subsection{Runtime}
+\[
+  Runtime = CPI \times CCT \times I
+\]
+
+
+%% \[
+%%   F = \frac{s\left(S - 1\right)}{\left(s - 1\right) S}
+%% \]
+%% \[
+%%   s = \frac{ F \times S}{\left(F - 1\right)S + 1}
+%% \]
+%% \[
+%%   MIPS =  \frac{Instruction Count}{\frac{I \times CPI}{CLK_{Rate}} \times 10^{6}} 
+%%        =  \frac{CLK_{Rate}}{CPI \times 10^{6}}
+%%        =  \frac{I}{ExecTime \times 10^{6}}
+%% \]
+
+
