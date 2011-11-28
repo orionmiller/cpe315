@@ -9,35 +9,6 @@ speeds up access for these data/instructions
 
 cache is essentially a hash table: sotres a key (address), value pair
 
-\subsection{Level 1 Cache}
-Commonly used to feed the pipeline.
-For instructions - ICache
-For Data - DCache
-
-%Diagram of cache bin in pipeline
-
-\subsection{Level 2}
-second type of on-chip meory that is larger and slower than l1 chache
-
-typically l2 cache is unified, holds both instruction and data
-
-if instruction or data i not found in l1, hopefully it will be in l2
-
-%l2 cache diagram
-
-\subsection{Level N Cache \& Beyond}
-accessing off-chip memory very slow because:
-- large capacitance from macroscopic pins on cpu package
-- large capacitance from circuit board wiring connecting CPU and off-chip memory
-
-We want more on-chip memory
-
-%diagram if flow form pipeline - l1 - l2 - main memory
-
--main memory acces time
-AMD Athlon FX-51 memory access is 125 clock cycles = 57 ns
-intel 3.2GHz P4 memory access is 204 clock cycles = 64 ns
-
 \subsection{Principle of Locality}
 Programs access a small proportion of their address space at any time.
 temporal locality
@@ -71,6 +42,38 @@ if accessed data is absent
       = 1 - hit ratio
     - then accessed data supplied from upper level
 
+\subsection{Level 1 Cache}
+Commonly used to feed the pipeline.
+For instructions - ICache
+For Data - DCache
+
+%Diagram of cache bin in pipeline
+
+\subsection{Level 2}
+second type of on-chip meory that is larger and slower than l1 chache
+
+typically l2 cache is unified, holds both instruction and data
+
+if instruction or data i not found in l1, hopefully it will be in l2
+
+%l2 cache diagram
+
+\subsection{Level N Cache \& Beyond}
+accessing off-chip memory very slow because:
+- large capacitance from macroscopic pins on cpu package
+- large capacitance from circuit board wiring connecting CPU and off-chip memory
+
+We want more on-chip memory
+
+%diagram if flow form pipeline - l1 - l2 - main memory
+
+-main memory acces time
+AMD Athlon FX-51 memory access is 125 clock cycles = 57 ns
+intel 3.2GHz P4 memory access is 204 clock cycles = 64 ns
+
+\subsection{Cache Protocols}
+
+
 \subsection{Direct Mapped}
 where in cache should data be placed so it can be quickly located?
 cache size is selecte to be 2 to the power of i e.g.
@@ -79,6 +82,112 @@ the lower i bits (e.g. 16) are used to to (quickly) find an item in the cache
 implies that each instruction/data from main memory is copied to (mapped to) a specific
 cache location
 
+\begin{itemize}
+\item Location determed by address
+\item Direct Mapped: only one choice
+\item (Block Address) modulo (\#Blocks in cache)
+\end{itemize}
+%image slide 25 lupos cache
+%image slide 27
+
+q1: Where can a block be placed in the upper level? \newline
+\textbf{Block Placment} \newline
+Single Location
+Bookshelf Example: One slot for books whose authors begine with P (e.g. Patterson, David)
+
+q2: How is a block found if it is in the upper level?\newline
+\textbf{Block Identification} \newline
+
+q3: Which block should be replaced on a miss?\newline
+\textbf{Block Replacement} \newline
+When we go the library and get Patterson's book, what should we replace?
+Whatever's in the ``P'' slot.
+
+\subsection{Direct Mapped Organization}
+Data has only one place to go, determined by address(addr mod num blocks)
+Possible paramaters: caches size, block size (num = blocks = cache / block size)
+It makes the most sense to make a ``block'' a series of contiguos memory locations
+Example:\newline
+
+Example: 1KB Direct Mapped Cache with 32 B Blocks \newline
+For a 2 to the power N byte cache:
+\begin{itemize}
+\item The uppermost (32 - N) bits are always the Cache Tag
+\item The lowest M bits are the Byte Select (Block Size = 2 ** M)
+\item On cache miss, pull in complete ``Cache Block'' (or ``Cache Line'')
+\end{itemize}
+%image
+
+\subsection{Cache Misses}
+On a cache hit the CPU proceeds normally. On a failure \newline
+\begin{itemize}
+\item Stall the CPU pipeline
+\item Fetch block from next level of hierarchy
+\item Instruction cache miss. 
+\subitem Restart instruction fetch
+\item Data cache miss
+\subitem Complete data access
+\end{itemize}
+
+\subsection{Tags \& Valid Bits}
+Use tag usually the highest bits to notify it is the data we are looking for.
+Valid Bit (initially 0) to show that what is in the spot is even valid data.
+Valid bit: 1 = present, 0 = not present.
+
 \subsection{Set Associative}
+N-way set associateve: N entries for each ache index\newline
+N direct mapped caches operate in parallel
+
+example: two -way set associate cache\newline
+\begin{itemize}
+\item Cache index selects a ``set'' from cache
+\item the two tags in the set are compared to the input in parallel - don't want to stall
+\item Data is slected based on the tag result
+\end{itemize}
+
+%diagram slide 38
+%2-way set associtive problem
+
+\textit{Disadvantages}
+N-way set associative cache vs cache verus direct mapped cache:\newline
+\begin{itemize}
+\item N comparators vs. 1
+\item Extra MUX delay for the data
+\item Data comes AFTER Hit/Miss decision and set selection
+\end{itemize}
+
+In a direct mapped cache, Cache Block is available and set selection\newline
+\begin{itemize}
+\item Possible to assume a hit and continu. Recover later if miss.
+\end{itemize}
+
+%diagrame slide 41
+%example fully associative
+%fully associative problem
+
+%---------------
+%slide 44 - 49
+
+\subsubsection{Writing Data}
+
+\textit{Write-Through}
+\begin{itemize}
+\item On data-write hit, could just update the block in cache
+\subitem \textbf{BIG PROBLEM WITH THAT}
+\subitem Cache and memory would be inconsistent
+\item Write through: also update memory
+\item makes writes take longer
+\subitem e.g. if base CPI = 1, 10\% of instructions are stores, write to memory takes 100 cycles
+\subitem effective CPI = 1 + 0.1 x 100 = 11
+\item \textbf{Solution: Write Buffer}
+\item Holds data waiting to be written to memory
+\item CPU continues immediately
+\subitem Only stalls on write if write buffer is already full
+\end{itemize}
+
+\subsubsection{Write-Back}
+
+
 
 \subsection{Performance}
+
